@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { fetchurl, geturls, parse_res, sorted_num } from "./Number";
+import React, { useState, useEffect } from "react";
 
 function App() {
+  const [numbers, setNumbers] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const urls = geturls();
+      const responses = await Promise.all(urls.map(fetchurl));
+      const num = await Promise.all(responses.map(parse_res));
+      const sortednum = sorted_num(num.flat());
+
+      setNumbers(sortednum);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        <h1>Number Management Microservice</h1>
+        <h2>Numbers: [{numbers.join(", ")}]</h2>
+      </div>
     </div>
   );
 }
